@@ -263,12 +263,18 @@ div[data-testid="stInfo"]::before {
 #===================================================================================
 
 def check_procedure_exists(session, procedure_name):
-    """Check if a stored procedure exists in the current database/schema"""
+    """Check if a stored procedure exists in SEQUENT_DB.ANALYTICS schema"""
     try:
-        result = session.sql(f"SHOW PROCEDURES LIKE '{procedure_name}'").collect()
+        # Check specifically in SEQUENT_DB.ANALYTICS where procedures are pre-created
+        result = session.sql(f"SHOW PROCEDURES LIKE '{procedure_name}' IN SCHEMA SEQUENT_DB.ANALYTICS").collect()
         return len(result) > 0
     except:
-        return False
+        # Fallback: check current schema if SEQUENT_DB.ANALYTICS doesn't exist
+        try:
+            result = session.sql(f"SHOW PROCEDURES LIKE '{procedure_name}'").collect()
+            return len(result) > 0
+        except:
+            return False
 
 def create_markov_stored_procedure(session):
     """
@@ -280,10 +286,11 @@ def create_markov_stored_procedure(session):
     """
     
     sp_name = "MARKOV_ATTRIBUTION_SP"
+    fully_qualified_sp = f"SEQUENT_DB.ANALYTICS.{sp_name}"
     
-    # Check if procedure already exists (pre-created)
+    # Check if procedure already exists (pre-created in SEQUENT_DB.ANALYTICS)
     if check_procedure_exists(session, sp_name):
-        return sp_name
+        return fully_qualified_sp
     
     try:
         # Only create if doesn't exist (fallback for users who haven't run setup script)
@@ -572,10 +579,11 @@ def create_shapley_stored_procedure(session):
     """
     
     sp_name = "SHAPLEY_ATTRIBUTION_SP"
+    fully_qualified_sp = f"SEQUENT_DB.ANALYTICS.{sp_name}"
     
-    # Check if procedure already exists (pre-created)
+    # Check if procedure already exists (pre-created in SEQUENT_DB.ANALYTICS)
     if check_procedure_exists(session, sp_name):
-        return sp_name
+        return fully_qualified_sp
     
     try:
         # Only create if doesn't exist (fallback for users who haven't run setup script)
@@ -2104,11 +2112,11 @@ if all([uid, evt, tmstp]) and conv!= None and conv_value !="''":
          unique_comptable_name = generate_unique_comptable_name()  
         
          # CREATE TABLE individiual compared (complement set) Paths 
-         if unitoftime==None and timeout ==None :
-             crttblrawsmceventscompsql = f"""CREATE TABLE {unique_comptable_name} AS (
-             select {uid}, listagg({evt}, ',') within group (order by MSQ) as path
-             from  (select * from {tbl} where {uid} NOT IN (SELECT DISTINCT ({uid}) FROM {unique_reftable_name} ) AND
-             {evt} not in({excl3}) and {tmstp} < (SELECT MAX({tmstp})from {database}.{schema}.{tbl} where {conv}='{conv_value}' )and {tmstp} between DATE('{startdt_input}') and DATE('{enddt_input}') {sql_where_clause}) 
+        if unitoftime==None and timeout ==None :
+            crttblrawsmceventscompsql = f"""CREATE TABLE {unique_comptable_name} AS (
+            select {uid}, listagg({evt}, ',') within group (order by MSQ) as path
+            from  (select * from {database}.{schema}.{tbl} where {uid} NOT IN (SELECT DISTINCT ({uid}) FROM {unique_reftable_name} ) AND
+            {evt} not in({excl3}) and {tmstp} < (SELECT MAX({tmstp})from {database}.{schema}.{tbl} where {conv}='{conv_value}' )and {tmstp} between DATE('{startdt_input}') and DATE('{enddt_input}') {sql_where_clause})
                  match_recognize(
                  {partitionby} 
                  order by {tmstp} 

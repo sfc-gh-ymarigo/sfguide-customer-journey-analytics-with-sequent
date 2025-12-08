@@ -61,9 +61,12 @@ This deploys the Streamlit app via Git integration from this repository.
 **Step 3: Access the Applications**
 
 Once deployment completes:
-1. In Snowsight, navigate to **Projects** → **Streamlit** (left sidebar)
-2. You'll see **"Sequent"**
-3. Click to open and start exploring!
+1. In Snowsight, **switch to `SEQUENT_ROLE`** using the role selector (top-left)
+2. Navigate to **Projects** → **Streamlit** (left sidebar)
+3. You'll see **"Sequent"**
+4. Click to open and start exploring!
+
+> **Note:** The setup script automatically grants `SEQUENT_ROLE` to the user who runs it. This role has all necessary permissions for the analytics applications.
 
 **All 6 analytics applications are now available:**
 - Path Analysis

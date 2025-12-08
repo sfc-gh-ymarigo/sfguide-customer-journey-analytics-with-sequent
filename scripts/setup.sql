@@ -20,8 +20,14 @@ SET JOURNEY_COUNT = 100000;  -- 100K journeys = ~1-2M events (adjust as needed)
 USE ROLE ACCOUNTADMIN;
 ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';
 
+-- Capture current user for role assignment
+SET USERNAME = (SELECT CURRENT_USER());
+
 -- Create dedicated role for the demo
 CREATE ROLE IF NOT EXISTS SEQUENT_ROLE;
+
+-- Grant role to current user running the setup
+GRANT ROLE SEQUENT_ROLE TO USER identifier($USERNAME);
 
 -- Create warehouse (Snowpark-optimized for ML and advanced analytics)
 CREATE WAREHOUSE IF NOT EXISTS SEQUENT_WH
