@@ -49,6 +49,7 @@ The setup script will automatically:
 - ✅ Generate 5 industry datasets (~100K customer journeys per industry)
   - Retail, Financial Services, Hospitality, Gaming, Food Delivery
 - ✅ Create stored procedures for Markov Chain and Shapley Value attribution
+- ✅ Enable cross-region inference for Cortex AI models
 - ✅ Configure all necessary permissions and grants
 
 **Step 2: Deploy the Streamlit App**
@@ -61,7 +62,7 @@ This deploys the Streamlit app via Git integration from this repository.
 **Step 3: Access the Applications**
 
 Once deployment completes:
-1. In Snowsight, **switch to `SEQUENT_ROLE`** using the role selector (top-left)
+1. In Snowsight, **switch to `SEQUENT_ROLE`** 
 2. Navigate to **Projects** → **Streamlit** (left sidebar)
 3. You'll see **"Sequent"**
 4. Click to open and start exploring!

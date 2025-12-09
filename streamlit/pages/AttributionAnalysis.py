@@ -2112,11 +2112,11 @@ if all([uid, evt, tmstp]) and conv!= None and conv_value !="''":
          unique_comptable_name = generate_unique_comptable_name()  
         
          # CREATE TABLE individiual compared (complement set) Paths 
-        if unitoftime==None and timeout ==None :
-            crttblrawsmceventscompsql = f"""CREATE TABLE {unique_comptable_name} AS (
-            select {uid}, listagg({evt}, ',') within group (order by MSQ) as path
-            from  (select * from {database}.{schema}.{tbl} where {uid} NOT IN (SELECT DISTINCT ({uid}) FROM {unique_reftable_name} ) AND
-            {evt} not in({excl3}) and {tmstp} < (SELECT MAX({tmstp})from {database}.{schema}.{tbl} where {conv}='{conv_value}' )and {tmstp} between DATE('{startdt_input}') and DATE('{enddt_input}') {sql_where_clause})
+         if unitoftime==None and timeout ==None :
+             crttblrawsmceventscompsql = f"""CREATE TABLE {unique_comptable_name} AS (
+             select {uid}, listagg({evt}, ',') within group (order by MSQ) as path
+             from  (select * from {database}.{schema}.{tbl} where {uid} NOT IN (SELECT DISTINCT ({uid}) FROM {unique_reftable_name} ) AND
+             {evt} not in({excl3}) and {tmstp} < (SELECT MAX({tmstp})from {database}.{schema}.{tbl} where {conv}='{conv_value}' )and {tmstp} between DATE('{startdt_input}') and DATE('{enddt_input}') {sql_where_clause}) 
                  match_recognize(
                  {partitionby} 
                  order by {tmstp} 
